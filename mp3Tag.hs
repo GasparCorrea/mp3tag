@@ -17,6 +17,15 @@ changeYear route year = do result <- (readTag route)
 changeTrack route track = do result <- (readTag route)
                              (writeTag route (setTrack track (fromJust result)))
 
+
+getInfo route = do result <- (readTag route)
+                   let artist = "Artist: "++(fromJust (getArtist (fromJust result)))
+                       album = "Album: "++(fromJust (getAlbum (fromJust result)))
+                       title = "Title: "++(fromJust (getTitle (fromJust result)))
+                       track = "Track: "++(fromJust (getTrack (fromJust result)))
+                       year = "Year: "++(fromJust (getYear (fromJust result)))
+                       in putStr (unlines(title: artist: album:year:track:[]))
+
 main = do args <- getArgs
           case args of
             ["-artist",route, artist] -> changeArtist route artist
@@ -24,5 +33,5 @@ main = do args <- getArgs
             ["-title",route,title] -> changeTitle route title
             ["-track",route,track] -> changeTrack route track
             ["-year",route,year] -> changeYear route year
-            _-> putStrLn "error: exactly three arguments needed"
-
+            ["-info",route] ->  getInfo route
+            _-> putStrLn "error: not enough arguments"
