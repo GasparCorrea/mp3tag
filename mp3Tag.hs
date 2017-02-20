@@ -24,7 +24,7 @@ getInfo route = do result <- (readTag route)
                        title = "Title: "++(fromJust (getTitle (fromJust result)))
                        track = "Track: "++(fromJust (getTrack (fromJust result)))
                        year = "Year: "++(fromJust (getYear (fromJust result)))
-                       in putStr (unlines(title: artist: album:year:track:[]))
+                       in putStr (unlines(title: artist: album: track: []))
 
 main = do args <- getArgs
           case args of

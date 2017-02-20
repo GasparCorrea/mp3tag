@@ -14,4 +14,4 @@ At the moment `mp3Tag` can only make one change at a time:
 * **-year** to change year
 * **-track** to change number of the track
 * **-title** to change title of the track
-
+* **-info** to show info of the tag
