@@ -2,36 +2,26 @@ import ID3.Simple
 import Data.Maybe
 import System.Environment
 
-changeArtist route artist = do result <- (readTag route)
-                               (writeTag route (setArtist artist (fromJust result)))
+getTag route = do result <- (readTag route)
+                  return (fromJust result)
 
-changeAlbum route album = do result <- (readTag route)
-                             (writeTag route (setAlbum album (fromJust result)))
+getInfo tag = let artist = "Artist: "++(fromJust (getArtist tag))
+                  album = "Album: "++(fromJust (getAlbum tag))
+                  title = "Title: "++(fromJust (getTitle tag))
+                  track = "Track: "++(fromJust (getTrack tag))
+                  year = "Year: "++(fromJust (getYear tag))
+                  in putStr (unlines(title: artist: album: track: []))
 
-changeTitle route title = do result <- (readTag route)
-                             (writeTag route (setTitle title (fromJust result)))
+loop [] tag route = do getInfo tag
+                       writeTag route tag
+loop (parameter:input:list) tag route = case parameter of
+                                            "-artist" -> loop list (setArtist input tag) route
+                                            "-album" -> loop list (setAlbum input tag) route
+                                            "-title" -> loop list (setTitle input tag) route
+                                            "-track" -> loop list (setTrack input tag) route
+                                            "-year" -> loop list (setYear input tag) route
+                                            _-> putStr ("error: "++parameter++" is not a valid parameter")
 
-changeYear route year = do result <- (readTag route)
-                           (writeTag route (setYear year (fromJust result)))
-
-changeTrack route track = do result <- (readTag route)
-                             (writeTag route (setTrack track (fromJust result)))
-
-
-getInfo route = do result <- (readTag route)
-                   let artist = "Artist: "++(fromJust (getArtist (fromJust result)))
-                       album = "Album: "++(fromJust (getAlbum (fromJust result)))
-                       title = "Title: "++(fromJust (getTitle (fromJust result)))
-                       track = "Track: "++(fromJust (getTrack (fromJust result)))
-                       year = "Year: "++(fromJust (getYear (fromJust result)))
-                       in putStr (unlines(title: artist: album: track: []))
-
-main = do args <- getArgs
-          case args of
-            ["-artist",route, artist] -> changeArtist route artist
-            ["-album",route, album] -> changeAlbum route album
-            ["-title",route,title] -> changeTitle route title
-            ["-track",route,track] -> changeTrack route track
-            ["-year",route,year] -> changeYear route year
-            ["-info",route] ->  getInfo route
-            _-> putStrLn "error: not enough arguments"
+main =  do args <- getArgs
+           tag <- getTag (head args)
+           loop (tail args) tag (head args)
