@@ -15,8 +15,3 @@ mp3Tag is a command-line tagger for mp3 files.
 
 # Built with
 * [idiii](https://hackage.haskell.org/package/idiii)
-
-# Acknowledgments
-I decided to make this to test my beginner's knowledge in Haskell and because I was tired of dealing with complex GUI's to make minor changes in my music files.
-
-
