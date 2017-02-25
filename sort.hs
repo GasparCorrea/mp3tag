@@ -7,19 +7,19 @@ getTag route = do result <- (readTag route)
                   return (fromJust result)
 
 mp3List [] outputList = outputList
-mp3List (x:xs) outputList = if (endswith ".mp3" (head inputList))
-                               then mp3List (tail inputList) ((head inputList):outputList)
-                               else mp3List (tail inputList) outputList
+mp3List (x:xs) outputList = if (endswith ".mp3" x)
+                               then mp3List xs (x:outputList)
+                               else mp3List xs outputList
 
-f [] outputList = do return outputList
-f inputList outputList = do tag <- getTag ("/home/gasparoctavio/Música/"++(head inputList))
-                            associatedList <- (f (tail inputList) (((head inputList),fromJust (getArtist tag )):outputList))
-                            return associatedList
+listAssociation [] outputList = do return outputList
+listAssociation (x:xs) outputList = do tag <- getTag ("/home/gasparoctavio/Música/"++ x)
+                                       associatedList <- (listAssociation xs ((x,fromJust (getArtist tag )):outputList))
+                                       return associatedList
 
 moveTo [] = putStrLn "Complete"
-moveTo inputList = let folderPath = ("/home/gasparoctavio/Música/"++(snd (head inputList)))
-                       oldPath = ("/home/gasparoctavio/Música/"++(fst (head inputList)))
-                       newPath = (folderPath++"/"++(fst(head inputList)))
-                       in do createDirectoryIfMissing False folderPath
-                             renamePath oldPath newPath
-                             moveTo (tail inputList)
+moveTo (x:xs) = let folderPath = ("/home/gasparoctavio/Música/"++(snd x))
+                    oldPath = ("/home/gasparoctavio/Música/"++(fst x))
+                    newPath = (folderPath++"/"++(fst x))
+                    in do createDirectoryIfMissing False folderPath
+                          renamePath oldPath newPath
+                          moveTo xs
